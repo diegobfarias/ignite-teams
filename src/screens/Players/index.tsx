@@ -73,6 +73,7 @@ export function Players() {
       fetchPlayersByTeam();
     } catch (error) {
       if (error instanceof AppError) {
+        setNewPlayerName('');
         return Alert.alert('Ops!', error.message);
       } else {
         console.error(error);

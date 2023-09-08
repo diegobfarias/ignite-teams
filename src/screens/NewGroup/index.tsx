@@ -39,16 +39,14 @@ export function NewGroup() {
 
       <Content>
         <Icon />
-        <Highlight
-          title='New team'
-          subtitle='Create a new team to add new people to it.'
+        <Highlight title='New team' subtitle='Create a new team to add new people to it.' />
+        <Input
+          placeholder="Team's name"
+          onChangeText={setGroup}
+          onSubmitEditing={handleCreateNewGroup}
+          returnKeyType='send'
         />
-        <Input placeholder="Team's name" onChangeText={setGroup} />
-        <Button
-          title='Create'
-          style={{ marginTop: 20 }}
-          onPress={handleCreateNewGroup}
-        />
+        <Button title='Create' style={{ marginTop: 20 }} onPress={handleCreateNewGroup} />
       </Content>
     </Container>
   );
