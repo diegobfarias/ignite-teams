@@ -9,8 +9,10 @@ import { GroupCard } from '@components/GroupCard';
 import { ListEmpty } from '@components/ListEmpty';
 import { Button } from '@components/Button';
 import { Header } from '@components/Header';
+import { Loading } from '@components/Loading';
 
 export function Groups() {
+  const [isLoading, setIsLoading] = useState(true);
   const [groups, setGroups] = useState([]);
   const navigation = useNavigation();
 
@@ -18,12 +20,21 @@ export function Groups() {
     navigation.navigate('newGroup');
   }
 
+  function handleOpenGroup(group: string) {
+    navigation.navigate('players', { group });
+  }
+
   async function fetchGroups() {
     try {
+      setIsLoading(true);
+
       const allGroups = await groupGetAll();
+
       setGroups(allGroups);
     } catch (error) {
       console.log(error);
+    } finally {
+      setIsLoading(false);
     }
   }
 
@@ -38,15 +49,19 @@ export function Groups() {
       <Header />
       <Highlight title='Teams' subtitle='Play with your team!' />
 
-      <FlatList
-        data={groups}
-        keyExtractor={(item) => item}
-        renderItem={({ item }) => <GroupCard title={item} />}
-        contentContainerStyle={groups.length === 0 && { flex: 1 }}
-        ListEmptyComponent={() => (
-          <ListEmpty message='How about to add a new team?' />
-        )}
-      />
+      {isLoading ? (
+        <Loading />
+      ) : (
+        <FlatList
+          data={groups}
+          keyExtractor={(item) => item}
+          renderItem={({ item }) => (
+            <GroupCard title={item} onPress={() => handleOpenGroup(item)} />
+          )}
+          contentContainerStyle={groups.length === 0 && { flex: 1 }}
+          ListEmptyComponent={() => <ListEmpty message='How about to add a new team?' />}
+        />
+      )}
       <Button title='Add new team' onPress={handleNewGroup} />
     </Container>
   );

@@ -6,6 +6,8 @@ import { Header } from '@components/Header';
 import { Input } from '@components/Input';
 import { useNavigation } from '@react-navigation/native';
 import { useState } from 'react';
+import { Alert } from 'react-native';
+import { AppError } from '@utils/AppError';
 
 export function NewGroup() {
   const [group, setGroup] = useState('');
@@ -13,12 +15,22 @@ export function NewGroup() {
 
   async function handleCreateNewGroup() {
     try {
-      await groupCreate(group);
-    } catch (error) {
-      console.log(error);
-    }
+      if (group.trim().length === 0) {
+        return Alert.alert('Error', 'You need to inform a group name.');
+      }
 
-    navigation.navigate('players', { group });
+      await groupCreate(group);
+      navigation.navigate('players', { group });
+    } catch (error) {
+      if (error instanceof AppError) {
+        return Alert.alert('Ops!', error.message);
+      } else {
+        return Alert.alert(
+          'Oh no!',
+          "Something went wrong. It's was not possible to create a new group."
+        );
+      }
+    }
   }
 
   return (
